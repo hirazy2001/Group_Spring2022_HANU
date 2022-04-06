@@ -80,9 +80,19 @@ public class AccountServiceImpl implements AccountService {
             return null;
         }
 
+        Account newAccount = account.get();
 
+        if(acct.getAccountStatus() != null){
+            newAccount.setAccountStatus(acct.getAccountStatus());
+        }
 
-        return null;
+        if(acct.getPinCode() != null){
+            newAccount.setPinCode(acct.getPinCode());
+        }
+
+        Account savedAccount = accountRepository.save(newAccount);
+
+        return serviceHelper.convertToAccountInfo(savedAccount);
     }
 
     @Override

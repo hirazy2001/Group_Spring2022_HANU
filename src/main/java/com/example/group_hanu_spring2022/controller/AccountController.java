@@ -3,6 +3,7 @@ package com.example.group_hanu_spring2022.controller;
 import com.example.group_hanu_spring2022.dto.AccountInfoDto;
 import com.example.group_hanu_spring2022.dto.RegisterAccountDto;
 import com.example.group_hanu_spring2022.dto.TransactionInfoDto;
+import com.example.group_hanu_spring2022.exception.ErrorMessage;
 import com.example.group_hanu_spring2022.exception.ResourceNotFoundException;
 import com.example.group_hanu_spring2022.model.Account;
 import com.example.group_hanu_spring2022.model.request.UploadFile;
@@ -231,10 +232,14 @@ public class AccountController {
      * @apiError 404 User not found.
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateAccount(@Valid @RequestBody AccountInfoDto account, @PathVariable int id) {
+    public ResponseEntity<?> updateAccount(@Valid @RequestBody AccountInfoDto account, @PathVariable Long id) {
+        AccountInfoDto accountInfoDto = accountService.updateAccount(account, id);
 
+        if(accountInfoDto == null){
+            return ResponseEntity.status(401).body(new ErrorMessage("Pincode is wrong!"));
+        }
 
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(accountInfoDto);
     }
 
     /**
