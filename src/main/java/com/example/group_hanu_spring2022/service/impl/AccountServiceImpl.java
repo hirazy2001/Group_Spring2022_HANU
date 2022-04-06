@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountInfoDto updateAccount(AccountInfoDto acct) {
+    public AccountInfoDto updateAccount(AccountInfoDto acct, Long id) {
+
+        Optional<Account> account = accountRepository.findById(id);
+
+        if(account.isEmpty()){
+            return null;
+        }
+
+
+
         return null;
     }
 

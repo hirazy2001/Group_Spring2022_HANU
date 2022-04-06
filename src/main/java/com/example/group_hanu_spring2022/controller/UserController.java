@@ -48,7 +48,13 @@ public class UserController {
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UserInfoDto>> getAllUsers() {
+    public ResponseEntity<List<UserInfoDto>> getAllUsers(HttpServletRequest httpServletRequest) {
+        boolean isAdmin = httpServletRequest.isUserInRole("ADMIN");
+
+        if(!isAdmin){
+            return ResponseEntity.status(401).body(null);
+        }
+
         return ResponseEntity.ok(userService.getAllUsers());
     }
 

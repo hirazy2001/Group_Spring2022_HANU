@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,10 +40,15 @@ public class TransactionController {
      * @apiError 401 Admin access only.
      * @apiError 404 User not found.
      */
-    @PreAuthorize("hasAuthority('ADMIN')")
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ResponseEntity<List<TransactionAdminDto>> getAllTransactions() {
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<List<TransactionAdminDto>> getAllTransactions(HttpServletRequest httpServletRequest) {
 
+        boolean isAdmin = httpServletRequest.isUserInRole("ADMIN");
+
+        if(!isAdmin){
+            return ResponseEntity.status(401).body(null);
+        }
         return ResponseEntity.ok(transactionService.getAllTransactions());
     }
 
@@ -57,8 +63,15 @@ public class TransactionController {
      * @apiError 404 User not found.
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<?> getTransaction(@PathVariable Long id) {
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> getTransaction(@PathVariable Long id, HttpServletRequest httpServletRequest) {
+
+        boolean isAdmin = httpServletRequest.isUserInRole("ADMIN");
+
+        if(!isAdmin){
+            return ResponseEntity.status(401).body(null);
+        }
+
         TransactionAdminDto transaction = transactionService.getTransaction(id);
 
         if(transaction == null){
@@ -144,6 +157,36 @@ public class TransactionController {
 
         return ResponseEntity.ok(transaction);
     }
+
+//    @RequestMapping(value = "/withdraw",
+//            method = RequestMethod.POST,
+//            consumes =  MimeTypeUtils.APPLICATION_JSON_VALUE
+//    )
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
+//    public ResponseEntity<?> createWithDrawTransaction(@RequestBody TransactionDto transactionDto){
+//
+//        logger.error("createWithDrawTransaction" + transactionDto.toString());
+//
+//        Optional<Account> fromAccountOptional = accountRepository.findById(transactionDto.getFrom_account());
+//
+//        if (fromAccountOptional.isEmpty()) {
+//            return ResponseEntity.status(404).body(new ResourceNotFoundException("Account", "id", transactionDto.getFrom_account()).getErrorMessage());
+//        }
+//
+//        Account fromAccount = fromAccountOptional.get();
+//
+//        if(!fromAccount.getPinCode().equals(transactionDto.getPinCode())){
+//            return ResponseEntity.status(404).body(new ResourceNotFoundException("Account", "pin code", "not exact").getErrorMessage());
+//        }
+//
+//        if (fromAccount.getBalance().compareTo(transactionDto.getAmount()) < 0) {
+//            return ResponseEntity.status(404).body(new ResourceNotFoundException("Account", "balance", "not enough").getErrorMessage());
+//        }
+//
+//        TransactionDto transaction = transactionService.createWithDrawTransaction(transactionDto);
+//
+//        return ResponseEntity.ok(transaction);
+//    }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public ResponseEntity<?> create(){

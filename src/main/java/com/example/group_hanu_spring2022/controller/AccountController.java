@@ -19,6 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -62,7 +63,13 @@ public class AccountController {
             produces = {MediaType.APPLICATION_JSON_VALUE}
     )
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<AccountInfoDto>> getAccounts() {
+    public ResponseEntity<List<AccountInfoDto>> getAccounts(HttpServletRequest httpServletRequest) {
+        boolean isAdmin = httpServletRequest.isUserInRole("ADMIN");
+
+        if(!isAdmin){
+            return ResponseEntity.status(401).body(null);
+        }
+
         return ResponseEntity.ok(accountService.getAllAccounts());
     }
 
@@ -118,6 +125,7 @@ public class AccountController {
      * @apiError 404 User not found.
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseEntity<?> getAccountById(@PathVariable Long id) {
         AccountInfoDto account = accountService.getAccount(id);
 
@@ -223,7 +231,9 @@ public class AccountController {
      * @apiError 404 User not found.
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateAccount(@Valid @RequestBody Account account, @PathVariable int id) {
+    public ResponseEntity<?> updateAccount(@Valid @RequestBody AccountInfoDto account, @PathVariable int id) {
+
+
         return ResponseEntity.ok(null);
     }
 
@@ -237,7 +247,7 @@ public class AccountController {
      * @apiError 401 Admin access only.
      * @apiError 404 User not found.
      */
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteAccount(@PathVariable Long id) {
         boolean isDeleted = accountService.deleteById(id);

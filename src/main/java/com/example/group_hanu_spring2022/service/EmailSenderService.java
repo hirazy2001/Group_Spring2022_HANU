@@ -52,7 +52,7 @@ public class EmailSenderService {
 
         String content = "" +
                 "Hey, " + fullName + ".<br><br>\n" +
-                "        You requested a new password for your Server Chatapp account.<br>\n" +
+                "        You requested a new password for your HANU Banking System account.<br>\n" +
                 "        Please use the following link to set a new password. It will expire in 1 hour.\n" +
                 "        <br><br>\n" +
                 "        Click <b>" + token + "</b> to copy to clipboard and reset password.\n" +
@@ -65,8 +65,6 @@ public class EmailSenderService {
         helper.setSubject("HANU BANKING SYSTEM - Reset Password");
         helper.setFrom("1901040142@s.hanu.edu.vn");
         mailSender.send(mimeMessage);
-
-
     }
 
 
