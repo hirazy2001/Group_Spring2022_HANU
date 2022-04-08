@@ -2,8 +2,10 @@ package com.example.group_hanu_spring2022.controller;
 
 import com.example.group_hanu_spring2022.dto.TransactionAdminDto;
 import com.example.group_hanu_spring2022.dto.TransactionDto;
+import com.example.group_hanu_spring2022.exception.ErrorMessage;
 import com.example.group_hanu_spring2022.exception.ResourceNotFoundException;
 import com.example.group_hanu_spring2022.model.Account;
+import com.example.group_hanu_spring2022.model.AccountType;
 import com.example.group_hanu_spring2022.repository.AccountRepository;
 import com.example.group_hanu_spring2022.service.TransactionService;
 import org.slf4j.Logger;
@@ -41,7 +43,7 @@ public class TransactionController {
      * @apiError 404 User not found.
      */
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    @PreAuthorize("hasAuthority('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<TransactionAdminDto>> getAllTransactions(HttpServletRequest httpServletRequest) {
 
         boolean isAdmin = httpServletRequest.isUserInRole("ADMIN");
@@ -158,41 +160,45 @@ public class TransactionController {
         return ResponseEntity.ok(transaction);
     }
 
-//    @RequestMapping(value = "/withdraw",
-//            method = RequestMethod.POST,
-//            consumes =  MimeTypeUtils.APPLICATION_JSON_VALUE
-//    )
-//    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
-//    public ResponseEntity<?> createWithDrawTransaction(@RequestBody TransactionDto transactionDto){
-//
-//        logger.error("createWithDrawTransaction" + transactionDto.toString());
-//
-//        Optional<Account> fromAccountOptional = accountRepository.findById(transactionDto.getFrom_account());
-//
-//        if (fromAccountOptional.isEmpty()) {
-//            return ResponseEntity.status(404).body(new ResourceNotFoundException("Account", "id", transactionDto.getFrom_account()).getErrorMessage());
-//        }
-//
-//        Account fromAccount = fromAccountOptional.get();
-//
-//        if(!fromAccount.getPinCode().equals(transactionDto.getPinCode())){
-//            return ResponseEntity.status(404).body(new ResourceNotFoundException("Account", "pin code", "not exact").getErrorMessage());
-//        }
-//
-//        if (fromAccount.getBalance().compareTo(transactionDto.getAmount()) < 0) {
-//            return ResponseEntity.status(404).body(new ResourceNotFoundException("Account", "balance", "not enough").getErrorMessage());
-//        }
-//
-//        TransactionDto transaction = transactionService.createWithDrawTransaction(transactionDto);
-//
-//        return ResponseEntity.ok(transaction);
-//    }
+    @RequestMapping(value = "/loan",
+            method = RequestMethod.POST,
+            consumes =  MimeTypeUtils.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<?> createLoanTransaction(@RequestBody TransactionDto transactionDto){
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseEntity<?> create(){
+        Optional<Account> fromAccountOptional = accountRepository.findById(transactionDto.getFrom_account());
 
-        return ResponseEntity.ok(null);
+        if (fromAccountOptional.isEmpty()) {
+            return ResponseEntity.status(404).body(new ErrorMessage("Cannot found account!"));
+        }
+
+        Account fromAccount = fromAccountOptional.get();
+
+        // Check Pin code
+        if(!fromAccount.getPinCode().equals(transactionDto.getPinCode())){
+            return ResponseEntity.status(404).body(new ErrorMessage("Pin code of account is not exact!"));
+        }
+
+        if(!fromAccount.getAccountType().equals(AccountType.LOAN)){
+            return ResponseEntity.status(404).body(new ErrorMessage("Account is not loan account!"));
+        }
+
+        TransactionDto transaction = transactionService.createLoanTransaction(transactionDto);
+
+        return ResponseEntity.ok(transaction);
     }
+
+    @RequestMapping(value = "/saving",
+            method = RequestMethod.POST,
+            consumes =  MimeTypeUtils.APPLICATION_JSON_VALUE
+    )
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('MODERATOR')")
+    public ResponseEntity<?> createSavingTransaction(){
+
+        return ResponseEntity.status(200).body(null);
+    }
+
 
     /**
      * @api {delete} / Delete a Transaction

@@ -17,6 +17,8 @@ interface TransactionService {
 
     TransactionDto createWithDrawTransaction(TransactionDto transaction);
 
+    TransactionDto createLoanTransaction(TransactionDto transaction);
+
     TransactionAdminDto getTransaction(long id);
 
     Transaction updateTransaction(Transaction transaction);

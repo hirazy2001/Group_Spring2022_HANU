@@ -105,6 +105,35 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    public TransactionDto createLoanTransaction(TransactionDto transactionDto) {
+
+        LocalDateTime time = LocalDateTime.now();
+
+        Account account = accountRepository.findById(transactionDto.getFrom_account()).get();
+
+        // Sender
+        accountRepository.saveBalanceByAcctID(transactionDto.getFrom_account(),
+                accountRepository.getById(transactionDto.getFrom_account()).getBalance().
+                        subtract(transactionDto.getAmount()));
+
+        Transaction transaction = Transaction.builder()
+                .amount(transactionDto.getAmount())
+                .fromAccount(account)
+                .createdAt(time)
+                .purpose(transactionDto.getPurpose())
+                .build();
+
+        Transaction newTransaction = transactionRepository.save(transaction);
+
+        TransactionDto infoTransaction = TransactionDto.builder()
+                .amount(newTransaction.getAmount())
+                .purpose(newTransaction.getPurpose())
+                .from_account(transactionDto.getFrom_account())
+                .build();
+        return infoTransaction;
+    }
+
+    @Override
     public TransactionAdminDto getTransaction(long id) {
         Optional<Transaction> transaction = transactionRepository.findById(id);
 

@@ -126,7 +126,6 @@ public class AccountController {
      * @apiError 404 User not found.
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MODERATOR')")
     public ResponseEntity<?> getAccountById(@PathVariable Long id) {
         AccountInfoDto account = accountService.getAccount(id);
 
@@ -232,6 +231,7 @@ public class AccountController {
      * @apiError 404 User not found.
      */
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<?> updateAccount(@Valid @RequestBody AccountInfoDto account, @PathVariable Long id) {
         AccountInfoDto accountInfoDto = accountService.updateAccount(account, id);
 
