@@ -1,0 +1,60 @@
+-- MySQL dump 10.13  Distrib 8.0.28, for Win64 (x86_64)
+--
+-- Host: us-cdbr-east-05.cleardb.net    Database: heroku_a5a598571e22a5f
+-- ------------------------------------------------------
+-- Server version	5.6.50-log
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `account`
+--
+
+DROP TABLE IF EXISTS `account`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `account` (
+  `id` bigint(20) NOT NULL,
+  `account_status` varchar(255) DEFAULT NULL,
+  `account_type` varchar(255) DEFAULT NULL,
+  `balance` decimal(19,2) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `interest_rate` double NOT NULL,
+  `pin_code` varchar(6) DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' ON UPDATE CURRENT_TIMESTAMP,
+  `u_id_id` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKbdb2mumtr1gdbuhhtivkcvsey` (`u_id_id`),
+  CONSTRAINT `FKbdb2mumtr1gdbuhhtivkcvsey` FOREIGN KEY (`u_id_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `account`
+--
+
+LOCK TABLES `account` WRITE;
+/*!40000 ALTER TABLE `account` DISABLE KEYS */;
+INSERT INTO `account` VALUES (2,'hehe','PRIMARY',999999946.00,'2022-04-26 19:09:13',0,'235478','2022-04-30 15:35:16',1),(3,'hehe','SAVING',14.00,'2022-04-27 04:41:57',0,'235478','2022-04-30 09:09:20',1),(5,'hehe','LOAN',28.00,'2022-04-27 04:50:53',0,'235478','2022-04-27 06:59:28',4),(13,'hehe','PRIMARY',0.00,'2022-04-30 05:23:27',0,'123456','2022-04-30 05:04:47',12),(16,'hehe','SAVING',0.00,'2022-04-30 06:14:32',0,'123456','2022-04-30 05:04:47',12),(18,'hehe','PRIMARY',23.00,'2022-04-30 06:38:40',0,'123456','2022-04-30 15:36:50',17),(22,'hehe','SAVING',0.00,'2022-04-30 09:14:27',0,'123456','2022-04-30 05:04:47',19),(23,'hehe','LOAN',-5.00,'2022-04-30 13:53:28',0,'123467','2022-04-30 13:55:16',17),(25,'hehe','LOAN',0.00,'2022-04-30 14:10:46',0,'123455','2022-04-30 13:53:28',14),(26,'hehe','PRIMARY',20.00,'2022-04-30 14:28:11',0,'123578','2022-04-30 14:29:32',19),(28,'hehe','LOAN',0.00,'2022-04-30 14:31:41',0,'123436','2022-04-30 13:53:28',19),(30,'hehe','PRIMARY',0.00,'2022-04-30 15:26:10',0,'123457','2022-04-30 13:53:28',17),(31,'hehe','PRIMARY',5.00,'2022-04-30 15:34:07',0,'123456','2022-04-30 15:36:50',19),(34,'hehe','PRIMARY',0.00,'2022-04-30 15:36:44',0,'123456','2022-04-30 13:53:28',32);
+/*!40000 ALTER TABLE `account` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2022-04-30 23:23:45
